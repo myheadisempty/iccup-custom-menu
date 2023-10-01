@@ -1,0 +1,30 @@
+{
+  "name": "iccup-custom-menu",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@ant-design/cssinjs": "^1.17.0",
+    "@heroicons/react": "^2.0.18",
+    "antd": "^5.9.4",
+    "cheerio": "^1.0.0-rc.12",
+    "next": "latest",
+    "next-themes": "^0.2.1",
+    "react": "latest",
+    "react-dom": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "autoprefixer": "latest",
+    "postcss": "latest",
+    "tailwindcss": "latest",
+    "typescript": "latest"
+  }
+}
