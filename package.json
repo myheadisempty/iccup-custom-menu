@@ -13,7 +13,7 @@
     "@heroicons/react": "^2.0.18",
     "antd": "^5.9.4",
     "cheerio": "^1.0.0-rc.12",
-    "next": "latest",
+    "next": "^13.5.4",
     "next-themes": "^0.2.1",
     "react": "latest",
     "react-dom": "latest"

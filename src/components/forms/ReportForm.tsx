@@ -1,21 +1,18 @@
+import { TournamentResultsContext } from "@/utils/context/TournamentResultsContext";
 import { calculateReward } from "@/utils/helpers/calculateReward";
-import { TournamentResults } from "@/utils/types";
-import { Button, Checkbox, Form, InputNumber, Select } from "antd";
-import { FC, useState } from "react";
+import { Button, Checkbox, Form, InputNumber, Select, Tabs } from "antd";
+import { FC, useContext, useState } from "react";
 
 interface ReportFormProps {
-  tournamentResults: TournamentResults;
   onOk: () => void;
-  sendReportText: (updatedResults: TournamentResults) => void;
 }
 
-export const ReportForm: FC<ReportFormProps> = ({
-  tournamentResults,
-  onOk,
-  sendReportText,
-}) => {
+export const ReportForm: FC<ReportFormProps> = ({ onOk }) => {
   const [form] = Form.useForm();
   const [thirdPlaceDisabled, setThirdPlaceDisabled] = useState(false);
+
+  const { tournamentResults, updateTournamentResults, updateIsResultsUpdated } =
+    useContext(TournamentResultsContext);
 
   const onFinish = (values: {
     techLossesCount: number;
@@ -32,18 +29,19 @@ export const ReportForm: FC<ReportFormProps> = ({
       : [];
 
     const updatedResults = {
-      ...tournamentResults,
+      ...tournamentResults!,
       top3: updatedTop3,
       techLossesCount: techLossesCount,
       awards: calculateReward(
-        tournamentResults.tourType,
-        tournamentResults.confirmedCount - techLossesCount,
-        tournamentResults.title,
-        tournamentResults.numOfRounds - 1
+        tournamentResults!.tourType,
+        tournamentResults!.confirmedCount - techLossesCount,
+        tournamentResults!.title,
+        tournamentResults!.numOfRounds - 1
       ),
     };
 
-    sendReportText(updatedResults);
+    updateTournamentResults(updatedResults);
+    updateIsResultsUpdated(true);
     onOk();
   };
 
@@ -60,7 +58,11 @@ export const ReportForm: FC<ReportFormProps> = ({
         ]}
         initialValue={0}
       >
-        <InputNumber min={0} className="w-full" />
+        <InputNumber
+          min={0}
+          max={tournamentResults!.confirmedCount - 4}
+          className="w-full"
+        />
       </Form.Item>
       <Form.Item>
         <Checkbox
@@ -73,7 +75,7 @@ export const ReportForm: FC<ReportFormProps> = ({
       {!thirdPlaceDisabled && (
         <Form.Item
           label={`Выбери ${
-            tournamentResults.tourType === "1x1"
+            tournamentResults!.tourType === "1x1"
               ? "игрока, занявшего"
               : "команду, занявшую"
           } 3 место`}
@@ -82,7 +84,7 @@ export const ReportForm: FC<ReportFormProps> = ({
             {
               required: true,
               message: `Выбери ${
-                tournamentResults.tourType === "1x1" ? "игрока" : "команду"
+                tournamentResults!.tourType === "1x1" ? "игрока" : "команду"
               }!`,
             },
           ]}
@@ -90,12 +92,12 @@ export const ReportForm: FC<ReportFormProps> = ({
           <Select
             options={[
               {
-                value: `${tournamentResults.top3_1}`,
-                label: `${tournamentResults.top3_1}`.replace(/,/g, " & "),
+                value: `${tournamentResults!.top3_1}`,
+                label: `${tournamentResults!.top3_1}`.replace(/,/g, " & "),
               },
               {
-                value: `${tournamentResults.top3_2}`,
-                label: `${tournamentResults.top3_2}`.replace(/,/g, " & "),
+                value: `${tournamentResults!.top3_2}`,
+                label: `${tournamentResults!.top3_2}`.replace(/,/g, " & "),
               },
             ]}
           />

@@ -1,30 +1,18 @@
 import { Modal, ModalProps } from "antd";
 import { ReportForm } from "../forms/ReportForm";
-import { ComponentProps, FC, useState } from "react";
-import { TournamentResults } from "@/utils/types";
+import { ComponentProps, FC, useContext } from "react";
+import { TournamentResultsContext } from "@/utils/context/TournamentResultsContext";
 
-interface CreateReportModalProps extends Omit<ModalProps, "afterClose"> {
-  tournamentResults: TournamentResults;
-  afterClose: (updatedResults: TournamentResults | undefined) => void;
+interface CreateReportModalProps extends ModalProps {
   onOk: ComponentProps<typeof ReportForm>["onOk"];
 }
 
 export const CreateReportModal: FC<CreateReportModalProps> = ({
   open,
-  tournamentResults,
   onCancel,
   onOk,
-  afterClose,
 }) => {
-  const [updatedResults, setUpdatedResults] = useState<
-    TournamentResults | undefined
-  >();
-
-  const handleModalAfterClose = () => {
-    if (afterClose) {
-      afterClose(updatedResults);
-    }
-  };
+  const { tournamentResults } = useContext(TournamentResultsContext);
 
   return (
     <Modal
@@ -34,16 +22,9 @@ export const CreateReportModal: FC<CreateReportModalProps> = ({
       onOk={onOk}
       destroyOnClose
       centered
-      afterClose={() => handleModalAfterClose()}
       footer={null}
     >
-      <ReportForm
-        tournamentResults={tournamentResults}
-        onOk={onOk}
-        sendReportText={(updatedResults: TournamentResults) => {
-          setUpdatedResults(updatedResults);
-        }}
-      />
+      <ReportForm onOk={onOk} />
     </Modal>
   );
 };

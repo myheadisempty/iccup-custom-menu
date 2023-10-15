@@ -11,7 +11,7 @@ export const ReportTextArea: FC<ReportTextAreaProps> = ({ reportText }) => {
   useEffect(() => setUpdatedReportText(reportText), [reportText]);
 
   return (
-    <div className="flex flex-col my-auto">
+    <div className="mt-5">
       <div className="mb-4 border max-w-[800px] border-zinc-700 rounded-md bg-black">
         <div className="flex px-3 py-2 border-b dark:border-zinc-700">
           <CopyButton reportText={updatedReportText} />
@@ -22,7 +22,7 @@ export const ReportTextArea: FC<ReportTextAreaProps> = ({ reportText }) => {
             cols={100}
             rows={20}
             value={updatedReportText}
-            className="w-full resize-none px-0 text-sm text-white border-0 bg-[#0a0a0a] outline-0"
+            className="w-full resize-none text-sm text-white bg-[#0a0a0a] outline-0"
           />
         </div>
       </div>
