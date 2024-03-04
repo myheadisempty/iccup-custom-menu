@@ -9,6 +9,17 @@ import { getTourResults } from "@/utils/getTourResults";
 import { generateReportText } from "@/utils/helpers/generateReportText";
 import { Modal } from "antd";
 import { useContext, useEffect, useState } from "react";
+import dynamic from "next/dynamic";
+
+const VersionUpdateModal = dynamic(
+  () =>
+    import("@/components/modals/VersionUpdateModel").then(
+      (mod) => mod.VersionUpdateModal
+    ),
+  {
+    ssr: false,
+  }
+);
 
 const Home = () => {
   const {
@@ -64,6 +75,7 @@ const Home = () => {
         onCancel={() => setIsModalOpen(false)}
         onOk={() => setIsModalOpen(false)}
       />
+      <VersionUpdateModal />
       {contextHolder}
     </div>
   );
