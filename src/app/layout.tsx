@@ -1,9 +1,9 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import StyledComponentsRegistry from "../lib/AntdRegistry";
 import { ReactNode } from "react";
 import { Providers } from "./providers";
+import { AntdRegistry } from "@ant-design/nextjs-registry";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,9 +15,9 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
   return (
     <html lang="ru" suppressHydrationWarning>
       <body className={inter.className}>
-        <StyledComponentsRegistry>
+        <AntdRegistry>
           <Providers>{children}</Providers>
-        </StyledComponentsRegistry>
+        </AntdRegistry>
       </body>
     </html>
   );
