@@ -1,3 +1,5 @@
+import { tz } from "moment-timezone";
+
 export function parseDate(date: string) {
   const isoDateRegex = /^\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}$/;
 
@@ -19,7 +21,7 @@ export function parseDate(date: string) {
     const minutesMatch = date.match(/(\d+)\s+мин/);
     const minutes = minutesMatch ? parseInt(minutesMatch[1]) : 0;
 
-    const today = new Date();
+    const today = tz("Europe/Moscow").toDate();
     const calcDate = new Date(
       today.getFullYear(),
       today.getMonth(),
