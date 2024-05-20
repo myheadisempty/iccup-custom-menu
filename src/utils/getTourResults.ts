@@ -56,7 +56,7 @@ const parseConfirmedCount = (data: string) => {
 };
 
 const parseRegisteredCount = ($: cheerio.CheerioAPI) => {
-  return Number($(".pg-left .field2").last().text().trim().split(" ")[0]);
+  return Number($(".pg-left .field2").eq(7).text().trim().split(" ")[0]);
 };
 
 const parseTourType = ($: cheerio.CheerioAPI) => {

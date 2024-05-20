@@ -1,6 +1,6 @@
 import { TournamentResultsContext } from "@/utils/context/TournamentResultsContext";
 import { calculateReward } from "@/utils/helpers/calculateReward";
-import { Button, Checkbox, Form, InputNumber, Select, Tabs } from "antd";
+import { Button, Checkbox, Form, InputNumber, Select } from "antd";
 import { FC, useContext, useState } from "react";
 
 interface ReportFormProps {
