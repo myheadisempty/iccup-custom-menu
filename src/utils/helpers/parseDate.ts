@@ -20,12 +20,15 @@ export function parseDate(date: string) {
     const minutes = minutesMatch ? parseInt(minutesMatch[1]) : 0;
 
     const today = new Date();
+    const utcTime = today.getTime() + today.getTimezoneOffset() * 60000;
+    const mskOffset = 3 * 60 * 60000;
+    const mskTime = new Date(utcTime + mskOffset);
     const calcDate = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate() - days,
-      today.getHours() - hours,
-      today.getMinutes() - minutes
+      mskTime.getFullYear(),
+      mskTime.getMonth(),
+      mskTime.getDate() - days,
+      mskTime.getHours() - hours,
+      mskTime.getMinutes() - minutes
     );
 
     const year = calcDate.getFullYear().toString().slice(-2);
