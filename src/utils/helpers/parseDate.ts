@@ -12,13 +12,13 @@ export function parseDate(date: string) {
 
     return `${day}.${month}.${year}`;
   } else {
-    const daysMatch = date.match(/(\d+)\s+дн/);
+    const daysMatch = date.match(/(\d+)\s(дн|day)/);
     const days = daysMatch ? parseInt(daysMatch[1]) : 0;
 
-    const hoursMatch = date.match(/(\d+)\s+час/);
+    const hoursMatch = date.match(/(\d+)\s(час|hour)/);
     const hours = hoursMatch ? parseInt(hoursMatch[1]) : 0;
 
-    const minutesMatch = date.match(/(\d+)\s+мин/);
+    const minutesMatch = date.match(/(\d+)\s(мин|min)/);
     const minutes = minutesMatch ? parseInt(minutesMatch[1]) : 0;
 
     const today = tz("Europe/Moscow").toDate();
