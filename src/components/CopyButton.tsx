@@ -1,6 +1,7 @@
-import { CheckIcon, ClipboardIcon } from "@heroicons/react/24/outline";
 import { Button } from "antd";
 import { FC, useEffect, useState } from "react";
+import IconContentCopy from "./icons/IconContentCopy";
+import IconCheck from "./icons/IconCheck";
 
 interface CopyButtonProps {
   reportText: string;
@@ -36,14 +37,14 @@ export const CopyButton: FC<CopyButtonProps> = ({ reportText }) => {
           copied ? "scale-0 opacity-0" : "scale-100 opacity-100"
         }`}
       >
-        <ClipboardIcon width={20} height={20} />
+        <IconContentCopy />
       </span>
       <span
         className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${
           copied ? "scale-100 opacity-100" : "scale-0 opacity-0"
         }`}
       >
-        <CheckIcon width={20} height={20} />
+        <IconCheck />
       </span>
     </Button>
   );
