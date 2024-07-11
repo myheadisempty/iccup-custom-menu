@@ -3,11 +3,9 @@ export interface Tournament {
   title: string;
 }
 
-export interface TournamentResults {
-  id: string;
+export interface TournamentResults extends Tournament {
   tourType: string;
   tourStart: string;
-  title: string;
   registeredCount: number;
   confirmedCount: number;
   techLossesCount?: number;
