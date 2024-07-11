@@ -1,6 +1,6 @@
 import { TournamentResultsContext } from "@/utils/context/TournamentResultsContext";
 import { calculateReward } from "@/utils/helpers/calculateReward";
-import { Button, Checkbox, Form, InputNumber, Select, Space } from "antd";
+import { Button, Checkbox, Form, InputNumber, Select } from "antd";
 import { FC, useContext, useState } from "react";
 
 interface ReportFormProps {
@@ -10,35 +10,48 @@ interface ReportFormProps {
 interface AwardsValues {
   top1: number;
   top2: number;
-  top3: number;
+  top3?: number;
+}
+
+interface FormValues {
+  techLossesCount: number;
+  top3?: string | string[];
+  awards?: AwardsValues;
 }
 
 export const ReportForm: FC<ReportFormProps> = ({ onOk }) => {
   const [form] = Form.useForm();
-  const [thirdPlaceEnabled, setThirdPlaceEnabled] = useState(false);
+  const [withoutThirdPlace, setWithoutThirdPlace] = useState(false);
   const [changeRewardsEnabled, setChangeRewardsEnabled] = useState(false);
+
+  const places = ["top1", "top2", "top3"].slice(0, withoutThirdPlace ? 2 : 3);
 
   const { tournamentResults, updateTournamentResults, updateIsResultsUpdated } =
     useContext(TournamentResultsContext);
 
-  const onFinish = (values: {
-    techLossesCount: number;
-    top3: string | string[];
-    awards?: AwardsValues;
-  }) => {
+  const onFinish = (values: FormValues) => {
     const { techLossesCount, top3, awards } = values;
-    const rewardsArray = awards && [awards.top1, awards.top2, awards.top3];
+
+    const awardsArray =
+      awards &&
+      [awards.top1, awards.top2, awards.top3].filter(
+        (reward) => reward !== undefined
+      );
 
     form.validateFields();
 
-    const updatedTop3 = Array.isArray(top3) ? top3 : top3.split(",");
+    const updatedTop3 = withoutThirdPlace
+      ? []
+      : Array.isArray(top3)
+      ? top3
+      : top3?.split(",");
 
     const updatedResults = {
       ...tournamentResults!,
       top3: updatedTop3,
       techLossesCount,
-      awards: rewardsArray
-        ? rewardsArray
+      awards: changeRewardsEnabled
+        ? awardsArray
         : calculateReward(
             tournamentResults!.tourType,
             tournamentResults!.confirmedCount - techLossesCount,
@@ -73,13 +86,13 @@ export const ReportForm: FC<ReportFormProps> = ({ onOk }) => {
       </Form.Item>
       <Form.Item>
         <Checkbox
-          checked={thirdPlaceEnabled}
-          onChange={() => setThirdPlaceEnabled(!thirdPlaceEnabled)}
+          checked={withoutThirdPlace}
+          onChange={() => setWithoutThirdPlace(!withoutThirdPlace)}
         >
           Без 3-го места
         </Checkbox>
       </Form.Item>
-      {!thirdPlaceEnabled && (
+      {!withoutThirdPlace && (
         <Form.Item
           label={`Выбери ${
             tournamentResults!.tourType === "1x1"
@@ -121,14 +134,14 @@ export const ReportForm: FC<ReportFormProps> = ({ onOk }) => {
       {changeRewardsEnabled && (
         <Form.Item>
           <div className="flex justify-between space-x-10">
-            {["top1", "top2", "top3"].map((place, index) => (
+            {places.map((place, index) => (
               <Form.Item
                 key={place}
                 label={`${index + 1} место`}
                 name={["awards", place]}
                 initialValue={0}
               >
-                <InputNumber min={0} className="w-full" />
+                <InputNumber min={0} className="w-full" step={10} />
               </Form.Item>
             ))}
           </div>
