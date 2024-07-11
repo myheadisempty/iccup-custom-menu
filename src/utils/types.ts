@@ -8,7 +8,7 @@ export interface TournamentResults extends Tournament {
   tourStart: string;
   registeredCount: number;
   confirmedCount: number;
-  techLossesCount: number;
+  techLossesCount?: number;
   numOfRounds: number;
   top1: string[];
   top2: string[];

@@ -32,11 +32,16 @@ export const ReportForm: FC<ReportFormProps> = ({ onOk }) => {
   const onFinish = (values: FormValues) => {
     const { techLossesCount, top3, awards } = values;
 
-    const awardsArray =
-      awards &&
-      [awards.top1, awards.top2, awards.top3].filter(
-        (reward) => reward !== undefined
-      );
+    const awardsArray = awards
+      ? [awards.top1, awards.top2, awards.top3].filter(
+          (award): award is number => award !== undefined
+        )
+      : calculateReward(
+          tournamentResults!.tourType,
+          tournamentResults!.confirmedCount - techLossesCount,
+          tournamentResults!.title,
+          tournamentResults!.numOfRounds - 1
+        );
 
     form.validateFields();
 
@@ -50,14 +55,7 @@ export const ReportForm: FC<ReportFormProps> = ({ onOk }) => {
       ...tournamentResults!,
       top3: updatedTop3,
       techLossesCount,
-      awards: changeRewardsEnabled
-        ? awardsArray
-        : calculateReward(
-            tournamentResults!.tourType,
-            tournamentResults!.confirmedCount - techLossesCount,
-            tournamentResults!.title,
-            tournamentResults!.numOfRounds - 1
-          ),
+      awards: awardsArray,
     };
 
     updateTournamentResults(updatedResults);
