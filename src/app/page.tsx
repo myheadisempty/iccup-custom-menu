@@ -8,7 +8,7 @@ import { CreateReportModal } from "@/components/modals/CreateReportModal";
 import { TournamentResultsContext } from "@/utils/context/TournamentResultsContext";
 import { getTourResults } from "@/utils/getTourResults";
 import { generateReportText } from "@/utils/helpers/generateReportText";
-import { FloatButton, Modal } from "antd";
+import { FloatButton, Modal, Spin } from "antd";
 import { useContext, useEffect, useState } from "react";
 
 const Home = () => {
@@ -21,20 +21,26 @@ const Home = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [reportText, setReportText] = useState("");
+  const [spinning, setSpinning] = useState(false);
 
   const [modal, contextHolder] = Modal.useModal();
 
   const handleTournamentClick = (tournamentId: string) => {
+    setSpinning(true);
     getTourResults(tournamentId)
-      .then((data) => updateTournamentResults(data))
+      .then((data) => {
+        updateTournamentResults(data);
+        updateIsResultsUpdated(false);
+        setSpinning(false);
+      })
       .catch(() => {
         modal.error({
           title: "Ошибка!",
           content: "Турнир не существует, либо ещё не начался",
           centered: true,
         });
+        setSpinning(false);
       });
-    updateIsResultsUpdated(false);
   };
 
   useEffect(() => {
@@ -68,6 +74,7 @@ const Home = () => {
         />
         {contextHolder}
       </div>
+      <Spin spinning={spinning} size="large" fullscreen />
       <FloatButton
         icon={<IconDiscord />}
         tooltip={
