@@ -1,5 +1,14 @@
 import * as cheerio from "cheerio";
 import { parseDate } from "./helpers/parseDate";
+import type { Element } from "domhandler";
+
+interface GridResults {
+  top1: string[];
+  top2: string[];
+  top3_1: string[];
+  top3_2: string[];
+  numOfRounds: number;
+}
 
 export const getTourResults = async (id: string) => {
   const baseUrl = `${window.location}api/tourney/`;
@@ -67,18 +76,10 @@ const parseTourStart = ($: cheerio.CheerioAPI) => {
   return parseDate($(".pg-left .t-corp3:nth-child(6) .field2").text().trim());
 };
 
-const parseGridResults = (
-  data: string
-): {
-  top1: string[];
-  top2: string[];
-  top3_1: string[];
-  top3_2: string[];
-  numOfRounds: number;
-} => {
+const parseGridResults = (data: string): GridResults => {
   const $ = cheerio.load(data);
   const stages = $('[id^="t"]').children();
-  let latestStage: cheerio.Cheerio<cheerio.Element> | null = null;
+  let latestStage: cheerio.Cheerio<Element> | null = null;
   stages.each((_, element) => {
     const classAttr = $(element).attr("class");
     if (classAttr && classAttr.startsWith("stage-")) {
