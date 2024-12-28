@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import { ReactNode } from "react";
 import { Providers } from "./providers";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
+import { ThemeProvider } from "next-themes";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,7 +17,9 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
     <html lang="ru" suppressHydrationWarning>
       <body className={inter.className}>
         <AntdRegistry>
-          <Providers>{children}</Providers>
+          <ThemeProvider attribute="class">
+            <Providers>{children}</Providers>
+          </ThemeProvider>
         </AntdRegistry>
       </body>
     </html>

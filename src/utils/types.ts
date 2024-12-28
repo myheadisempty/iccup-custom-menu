@@ -1,19 +1,31 @@
-export interface Tournament {
+export interface TournamentData {
   id: string;
   title: string;
-}
-
-export interface TournamentResults extends Tournament {
   tourType: string;
   tourStart: string;
-  registeredCount: number;
-  confirmedCount: number;
-  techLossesCount?: number;
+  participantStats: {
+    registered: number;
+    confirmed: number;
+  };
   numOfRounds: number;
-  top1: string[];
-  top2: string[];
-  top3?: string | string[];
-  top3_1?: string[];
-  top3_2?: string[];
-  awards?: number[];
+  winners: {
+    firstPlace: string[];
+    secondPlace: string[];
+    thirdPlaceCandidates: {
+      candidate1: string[];
+      candidate2: string[];
+    };
+  };
 }
+
+export interface TournamentResults extends TournamentData {
+  participantStats: TournamentData["participantStats"] & {
+    technicalLosses: number;
+  };
+  winners: TournamentData["winners"] & {
+    thirdPlace: string[];
+  };
+  awards: number[];
+}
+
+export type TournamentList = Pick<TournamentData, "id" | "title">[];

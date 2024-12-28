@@ -1,50 +1,91 @@
-import { FC, useContext, useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Switch } from "antd";
-import { TournamentResultsContext } from "@/utils/context/TournamentResultsContext";
+import { useTournamentData } from "@/utils/context/TournamentContext";
+import { TournamentResults } from "@/utils/types";
 
-interface OptionsMenuProps {
-  isModalOpen: boolean;
-}
+const AWARD_BOOSTS = [30, 20, 10] as const;
 
-export const OptionsMenu: FC<OptionsMenuProps> = ({ isModalOpen }) => {
-  const [awardsApplied, setAwardsApplied] = useState(false);
-  const [originalAwards, setOriginalAwards] = useState<number[]>([]);
+export const OptionsMenu = () => {
+  const [isBoostedAwardsActive, setIsBoostedAwardsActive] = useState(false);
+  const [baseAwards, setBaseAwards] = useState<number[] | null>(null);
+  const previousResultsRef = useRef<TournamentResults | null>(null);
 
-  const { tournamentResults, updateTournamentResults } = useContext(
-    TournamentResultsContext
-  );
+  const { tournamentResults, setTournamentResults } = useTournamentData();
+
+  const haveResultsChanged = (
+    prev: TournamentResults,
+    current: TournamentResults
+  ) => {
+    return (
+      prev.id !== current.id ||
+      prev.participantStats.technicalLosses !==
+        current.participantStats.technicalLosses ||
+      prev.winners.thirdPlace.join() !== current.winners.thirdPlace.join()
+    );
+  };
+
+  const getBoostedAwards = (baseAwards: number[]) =>
+    baseAwards.map((num, index) => num + AWARD_BOOSTS[index]);
+
+  const areAwardsMatchingState = (
+    currentAwards: number[],
+    baseAwards: number[],
+    isBoostActive: boolean
+  ) => {
+    const expectedAwards = isBoostActive
+      ? getBoostedAwards(baseAwards)
+      : baseAwards;
+    return JSON.stringify(currentAwards) === JSON.stringify(expectedAwards);
+  };
+
+  const resetState = () => {
+    setIsBoostedAwardsActive(false);
+    setBaseAwards(null);
+  };
 
   useEffect(() => {
-    if (isModalOpen) {
-      setAwardsApplied(false);
+    if (!tournamentResults || !previousResultsRef.current) {
+      previousResultsRef.current = tournamentResults;
+      return;
     }
-  }, [isModalOpen]);
 
-  const onChange = (checked: boolean) => {
-    if (tournamentResults!.awards !== undefined) {
-      setOriginalAwards(tournamentResults!.awards);
+    const prevResults = previousResultsRef.current;
 
-      if (checked && !awardsApplied) {
-        const updatedAwards = tournamentResults!.awards.map(
-          (num, index) => num + [30, 20, 10][index]
-        );
+    if (haveResultsChanged(prevResults, tournamentResults)) {
+      resetState();
+    } else if (isBoostedAwardsActive && baseAwards) {
+      const awardsMatch = areAwardsMatchingState(
+        tournamentResults.awards,
+        baseAwards,
+        true
+      );
 
-        const updatedResults = {
-          ...tournamentResults!,
-          awards: updatedAwards,
-        };
-
-        updateTournamentResults(updatedResults);
-        setAwardsApplied(true);
-      } else if (!checked && awardsApplied) {
-        const updatedResults = {
-          ...tournamentResults!,
-          awards: originalAwards,
-        };
-
-        updateTournamentResults(updatedResults);
-        setAwardsApplied(false);
+      if (!awardsMatch) {
+        resetState();
       }
+    }
+
+    previousResultsRef.current = tournamentResults;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tournamentResults, baseAwards, isBoostedAwardsActive]);
+
+  const handleSwitchChange = () => {
+    if (!tournamentResults) return;
+
+    if (!isBoostedAwardsActive) {
+      const currentAwards = tournamentResults.awards;
+      setBaseAwards(currentAwards);
+      setTournamentResults({
+        ...tournamentResults,
+        awards: getBoostedAwards(currentAwards),
+      });
+      setIsBoostedAwardsActive(true);
+    } else if (isBoostedAwardsActive && baseAwards) {
+      setTournamentResults({
+        ...tournamentResults,
+        awards: baseAwards,
+      });
+      setIsBoostedAwardsActive(false);
     }
   };
 
@@ -53,9 +94,9 @@ export const OptionsMenu: FC<OptionsMenuProps> = ({ isModalOpen }) => {
       <div className="flex justify-between">
         <label className="text-gray-300 mr-4">Повышенные капсы</label>
         <Switch
-          onChange={onChange}
-          checked={awardsApplied}
-          disabled={tournamentResults === undefined}
+          onChange={handleSwitchChange}
+          checked={isBoostedAwardsActive}
+          disabled={!tournamentResults}
         />
       </div>
     </div>

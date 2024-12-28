@@ -2,15 +2,7 @@ import * as cheerio from "cheerio";
 import { parseDate } from "./helpers/parseDate";
 import type { Element } from "domhandler";
 
-interface GridResults {
-  top1: string[];
-  top2: string[];
-  top3_1: string[];
-  top3_2: string[];
-  numOfRounds: number;
-}
-
-export const getTourResults = async (id: string) => {
+export const getTourData = async (id: string) => {
   const baseUrl = `${window.location}api/tourney/`;
   const viewUrl = `${baseUrl}view/${id}.html`;
 
@@ -27,11 +19,11 @@ export const getTourResults = async (id: string) => {
   ]);
 
   const $view = cheerio.load(viewUrlData);
-  const { confirmedCount } = parseConfirmedCount(playersData);
+  const confirmedCount = parseConfirmedCount(playersData);
   const registeredCount = parseRegisteredCount($view);
   const tourType = parseTourType($view);
   const tourStart = parseTourStart($view);
-  const { top1, top2, top3_1, top3_2, numOfRounds } =
+  const { firstPlace, secondPlace, thirdPlaceCandidates, numOfRounds } =
     parseGridResults(gridData);
 
   return {
@@ -39,12 +31,15 @@ export const getTourResults = async (id: string) => {
     tourType,
     tourStart,
     title: $view("div.league-start h1").text(),
-    registeredCount,
-    confirmedCount,
-    top1,
-    top2,
-    top3_1,
-    top3_2,
+    participantStats: {
+      registered: registeredCount,
+      confirmed: confirmedCount,
+    },
+    winners: {
+      firstPlace,
+      secondPlace,
+      thirdPlaceCandidates,
+    },
     numOfRounds,
   };
 };
@@ -61,7 +56,7 @@ const parseConfirmedCount = (data: string) => {
         }
       });
   });
-  return { confirmedCount };
+  return confirmedCount;
 };
 
 const parseRegisteredCount = ($: cheerio.CheerioAPI) => {
@@ -76,7 +71,7 @@ const parseTourStart = ($: cheerio.CheerioAPI) => {
   return parseDate($(".pg-left .t-corp3:nth-child(6) .field2").text().trim());
 };
 
-const parseGridResults = (data: string): GridResults => {
+const parseGridResults = (data: string) => {
   const $ = cheerio.load(data);
   const stages = $('[id^="t"]').children();
   let latestStage: cheerio.Cheerio<Element> | null = null;
@@ -91,13 +86,13 @@ const parseGridResults = (data: string): GridResults => {
 
   const latestStageClassName = latestStage!.attr("class");
 
-  const top1 =
+  const firstPlace =
     latestStage!
       .find(".tplay a.profile-view-link")
       .map((_, elem) => $(elem).text())
       .get() ?? [];
 
-  const top2 = $(
+  const secondPlace = $(
     `.${latestStageClassName?.replace(/\d$/, (num) =>
       String(Number(num) - 1)
     )} .looser .tplay a.profile-view-link`
@@ -105,7 +100,7 @@ const parseGridResults = (data: string): GridResults => {
     .map((_, elem) => $(elem).text())
     .get();
 
-  const top3 = $(
+  const thirdPlace = $(
     `.${latestStageClassName?.replace(/\d$/, (num) =>
       String(Number(num) - 2)
     )} .looser .tplay a.profile-view-link`
@@ -117,9 +112,12 @@ const parseGridResults = (data: string): GridResults => {
     $(".round").last().find("a").text().match(/\d+/)![0]
   );
 
-  const halfIndex = Math.ceil(top3.length / 2);
-  const top3_1 = top3.slice(0, halfIndex);
-  const top3_2 = top3.slice(halfIndex);
+  const halfIndex = thirdPlace.length / 2;
 
-  return { top1, top2, top3_1, top3_2, numOfRounds };
+  const thirdPlaceCandidates = {
+    candidate1: thirdPlace.slice(0, halfIndex),
+    candidate2: thirdPlace.slice(halfIndex),
+  };
+
+  return { firstPlace, secondPlace, thirdPlaceCandidates, numOfRounds };
 };
