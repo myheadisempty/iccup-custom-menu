@@ -37,11 +37,7 @@ const Home = () => {
     if (cachedData) {
       setTournamentData(cachedData);
 
-      if (cachedData.winners.firstPlace.length === 0) {
-        openErrorModal("Турнир в процессе");
-      } else {
-        setIsModalOpen(true);
-      }
+      setIsModalOpen(true);
 
       setSpinning(false);
       return;
@@ -50,11 +46,11 @@ const Home = () => {
     getTourData(tournamentId)
       .then((data) => {
         setTournamentData(data);
-        setCache(tournamentId, data, 120);
 
         if (data.winners.firstPlace.length === 0) {
           openErrorModal("Турнир в процессе");
         } else {
+          setCache(tournamentId, data, 120);
           setIsModalOpen(true);
         }
       })
