@@ -1,7 +1,9 @@
+export type TourType = "1x1" | "2x2" | "3x3" | "5x5";
+
 export interface TournamentData {
   id: string;
   title: string;
-  tourType: string;
+  tourType: TourType;
   tourStart: string;
   participantStats: {
     registered: number;
@@ -18,14 +20,35 @@ export interface TournamentData {
   };
 }
 
-export interface TournamentResults extends TournamentData {
+export interface CustomTournamentResults extends TournamentData {
   participantStats: TournamentData["participantStats"] & {
     technicalLosses: number;
   };
   winners: TournamentData["winners"] & {
     thirdPlace: string[];
   };
-  awards: number[];
+  awards: Array<{
+    cups: number;
+  }>;
 }
 
+export interface DotaTournamentResults extends TournamentData {
+  participantStats: TournamentData["participantStats"] & {
+    technicalLosses: number;
+  };
+  winners: TournamentData["winners"] & {
+    thirdPlace: string[];
+  };
+  awards: Array<{
+    cups: number;
+    pts: number;
+  }>;
+}
+
+export type TournamentResultsUnion =
+  | CustomTournamentResults
+  | DotaTournamentResults;
+
 export type TournamentList = Pick<TournamentData, "id" | "title">[];
+
+export type Role = "custom" | "dota";

@@ -5,14 +5,14 @@ import { OptionsMenu } from "@/components/OptionsMenu";
 import { ReportTextArea } from "@/components/ReportTextArea";
 import { TournamentList } from "@/components/TournamentList";
 import { CreateReportModal } from "@/components/modals/CreateReportModal";
-import { useTournamentData } from "@/utils/context/TournamentContext";
 import { getTourData } from "@/utils/getTourData";
 import { FloatButton, Modal, Spin } from "antd";
 import { useState } from "react";
 import { useCache } from "@/utils/context/CacheContext";
+import useTournamentStore from "@/store/tournamentStore";
 
 const Home = () => {
-  const { setTournamentData } = useTournamentData();
+  const { setTournamentData } = useTournamentStore();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [spinning, setSpinning] = useState(false);
@@ -64,13 +64,13 @@ const Home = () => {
         <OptionsMenu />
         <TournamentList onTournamentSelect={handleTournamentSelect} />
         <ReportTextArea />
-        <CreateReportModal
-          open={isModalOpen}
-          onCancel={() => setIsModalOpen(false)}
-          onOk={() => setIsModalOpen(false)}
-        />
-        {contextHolder}
       </div>
+      <CreateReportModal
+        open={isModalOpen}
+        onCancel={() => setIsModalOpen(false)}
+        onOk={() => setIsModalOpen(false)}
+      />
+      {contextHolder}
       <Spin spinning={spinning} size="large" fullscreen />
       <FloatButton
         icon={<IconDiscord />}

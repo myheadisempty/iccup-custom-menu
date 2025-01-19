@@ -1,17 +1,31 @@
 import { useState, useEffect } from "react";
 import { CopyButton } from "./CopyButton";
-import { useTournamentData } from "@/utils/context/TournamentContext";
-import { generateReportText } from "@/utils/helpers/generateReportText";
+import { generateCustomTourReportText } from "@/utils/helpers/generateCustomTourReportText";
+import { generateDotaTourReportText } from "@/utils/helpers/generateDotaTourReportText";
+import useTournamentStore from "@/store/tournamentStore";
+import useRoleStore from "@/store/roleStore";
+import { DotaTournamentResults } from "@/utils/types";
 
 export const ReportTextArea = () => {
   const [reportText, setReportText] = useState("");
 
-  const { tournamentResults } = useTournamentData();
+  const { tournamentResults } = useTournamentStore();
+
+  const { role } = useRoleStore();
 
   useEffect(() => {
     if (tournamentResults) {
-      setReportText(generateReportText(tournamentResults));
+      if (role === "custom") {
+        setReportText(generateCustomTourReportText(tournamentResults));
+      } else if (role === "dota") {
+        setReportText(
+          generateDotaTourReportText(tournamentResults as DotaTournamentResults)
+        );
+      }
+    } else {
+      setReportText("");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tournamentResults]);
 
   return (

@@ -1,8 +1,10 @@
-import { useTournamentData } from "@/utils/context/TournamentContext";
-import { calculateReward } from "@/utils/helpers/calculateReward";
-import { TournamentResults } from "@/utils/types";
+import { calculateAwards } from "@/utils/helpers/сalculateAwards";
 import { Button, Checkbox, Form, InputNumber, Select } from "antd";
 import { FC, useState } from "react";
+import dotaAwards from "../../../reward-configs/dota-tours-rewards.json";
+import customAwards from "../../../reward-configs/custom-tours-rewards.json";
+import useRoleStore from "@/store/roleStore";
+import useTournamentStore from "@/store/tournamentStore";
 
 interface ReportFormProps {
   onOk: () => void;
@@ -17,7 +19,9 @@ export const ReportForm: FC<ReportFormProps> = ({ onOk }) => {
   const [form] = Form.useForm();
   const [isThirdPlaceSkipped, setIsThirdPlaceSkipped] = useState(false);
 
-  const { tournamentData, setTournamentResults } = useTournamentData();
+  const { tournamentData, setTournamentResults } = useTournamentStore();
+
+  const { role } = useRoleStore();
 
   if (!tournamentData) return null;
 
@@ -29,9 +33,11 @@ export const ReportForm: FC<ReportFormProps> = ({ onOk }) => {
     return value.split(",");
   };
 
-  const prepareTournamentResults = (values: FormValues): TournamentResults => {
+  const prepareTournamentResults = (values: FormValues) => {
     const { technicalLosses, thirdPlace } = values;
     const confirmedParticipants = participantStats.confirmed - technicalLosses;
+
+    const awardsConfig = role === "custom" ? customAwards : dotaAwards;
 
     return {
       ...tournamentData,
@@ -39,7 +45,8 @@ export const ReportForm: FC<ReportFormProps> = ({ onOk }) => {
         ...participantStats,
         technicalLosses,
       },
-      awards: calculateReward(
+      awards: calculateAwards(
+        awardsConfig,
         tourType,
         confirmedParticipants,
         title,

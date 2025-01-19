@@ -1,3 +1,4 @@
+import useRoleStore from "@/store/roleStore";
 import { getFinishedTours } from "@/utils/getFinishedTours";
 import { TournamentList as TourList } from "@/utils/types";
 import { Input, notification, Select, Spin } from "antd";
@@ -15,6 +16,8 @@ export const TournamentList: FC<TournamentListProps> = ({
   const [tournaments, setTournaments] = useState<TourList>([]);
   const [loading, setLoading] = useState(true);
 
+  const { role } = useRoleStore();
+
   const [api, contextHolder] = notification.useNotification();
 
   const openErrorNotification = (error: string) => {
@@ -26,12 +29,16 @@ export const TournamentList: FC<TournamentListProps> = ({
   };
 
   useEffect(() => {
-    getFinishedTours()
+    if (!role) return;
+
+    setLoading(true);
+
+    getFinishedTours(role)
       .then((data) => setTournaments(data))
       .catch((error) => openErrorNotification(error.message))
       .finally(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [role]);
 
   return (
     <>

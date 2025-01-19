@@ -1,6 +1,7 @@
 import * as cheerio from "cheerio";
 import { parseDate } from "./helpers/parseDate";
 import type { Element } from "domhandler";
+import { TourType } from "./types";
 
 export const getTourData = async (id: string) => {
   const baseUrl = `${window.location}api/tourney/`;
@@ -21,7 +22,7 @@ export const getTourData = async (id: string) => {
   const $view = cheerio.load(viewUrlData);
   const confirmedCount = parseConfirmedCount(playersData);
   const registeredCount = parseRegisteredCount($view);
-  const tourType = parseTourType($view);
+  const tourType = parseTourType($view) as TourType;
   const tourStart = parseTourStart($view);
   const { firstPlace, secondPlace, thirdPlaceCandidates, numOfRounds } =
     parseGridResults(gridData);

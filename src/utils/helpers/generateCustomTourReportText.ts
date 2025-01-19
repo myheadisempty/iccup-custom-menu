@@ -1,4 +1,4 @@
-import { TournamentResults } from "../types";
+import { CustomTournamentResults, TourType } from "../types";
 
 const generatePlayerLinks = (players: string[]) =>
   players
@@ -13,8 +13,8 @@ const generatePlayerLinks = (players: string[]) =>
 const generatePlaceBlock = (
   place: number,
   players: string[],
-  award: number,
-  tourType: string
+  awards: number,
+  tourType: TourType
 ) => {
   const imageUrl = {
     1: "http://imgs.su/tmp/2013-05-24/1369417943-564.jpg",
@@ -24,10 +24,10 @@ const generatePlaceBlock = (
 
   return `${place} место[img]${imageUrl}[/img] - ${generatePlayerLinks(
     players
-  )} - получа${tourType !== "1x1" ? "ют по" : "ет"} ${award} капсов\n`;
+  )} - получа${tourType !== "1x1" ? "ют по" : "ет"} ${awards} капсов\n`;
 };
 
-export const generateReportText = ({
+export const generateCustomTourReportText = ({
   id,
   title,
   tourType,
@@ -35,19 +35,24 @@ export const generateReportText = ({
   participantStats,
   tourStart,
   awards,
-}: TournamentResults) => {
+}: CustomTournamentResults) => {
   const { firstPlace, secondPlace, thirdPlace } = winners;
   const { registered, confirmed, technicalLosses } = participantStats;
 
-  const firstPlaceText = generatePlaceBlock(1, firstPlace, awards[0], tourType);
+  const firstPlaceText = generatePlaceBlock(
+    1,
+    firstPlace,
+    awards[0].cups,
+    tourType
+  );
   const secondPlaceText = generatePlaceBlock(
     2,
     secondPlace,
-    awards[1],
+    awards[1].cups,
     tourType
   );
   const thirdPlaceText = thirdPlace.length
-    ? generatePlaceBlock(3, thirdPlace, awards[2], tourType)
+    ? generatePlaceBlock(3, thirdPlace, awards[2].cups, tourType)
     : "";
 
   return `[url=https://iccup.com/tourney/view/${id}.html]${title} [${tourStart}][/url]
