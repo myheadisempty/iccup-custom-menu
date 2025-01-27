@@ -8,8 +8,8 @@ import { CreateReportModal } from "@/components/modals/CreateReportModal";
 import { getTourData } from "@/utils/getTourData";
 import { FloatButton, Modal, Spin } from "antd";
 import { useState } from "react";
-import { useCache } from "@/utils/context/CacheContext";
 import useTournamentStore from "@/store/tournamentStore";
+import { useCache } from "@/store/cacheStore";
 
 const Home = () => {
   const { setTournamentData } = useTournamentStore();
