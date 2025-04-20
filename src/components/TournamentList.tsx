@@ -15,6 +15,7 @@ export const TournamentList: FC<TournamentListProps> = ({
 }) => {
   const [tournaments, setTournaments] = useState<TourList>([]);
   const [loading, setLoading] = useState(true);
+  const [hydrated, setHydrated] = useState(false);
 
   const { role } = useRoleStore();
 
@@ -29,7 +30,13 @@ export const TournamentList: FC<TournamentListProps> = ({
   };
 
   useEffect(() => {
-    if (!role) return;
+    if (useRoleStore.persist.hasHydrated()) {
+      setHydrated(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated || !role) return;
 
     setLoading(true);
 
@@ -38,7 +45,7 @@ export const TournamentList: FC<TournamentListProps> = ({
       .catch((error) => openErrorNotification(error.message))
       .finally(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [role]);
+  }, [hydrated, role]);
 
   return (
     <>
