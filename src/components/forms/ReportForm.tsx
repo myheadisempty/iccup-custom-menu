@@ -1,6 +1,6 @@
 import { calculateAwards } from "@/utils/helpers/сalculateAwards";
-import { Button, Checkbox, Form, InputNumber, Select } from "antd";
-import { FC, useState } from "react";
+import { Button, Checkbox, Form, InputNumber, Select, Tooltip } from "antd";
+import { FC, useEffect, useState } from "react";
 import dotaAwards from "../../../reward-configs/dota-tours-rewards.json";
 import customAwards from "../../../reward-configs/custom-tours-rewards.json";
 import useRoleStore from "@/store/roleStore";
@@ -10,18 +10,33 @@ interface ReportFormProps {
   onOk: () => void;
 }
 
-type FormValues = {
+interface FormValues {
   thirdPlace: string;
   technicalLosses: number;
-};
+}
+
+type SelectOptions = Array<{
+  value: string;
+  label: string;
+}>;
 
 export const ReportForm: FC<ReportFormProps> = ({ onOk }) => {
   const [form] = Form.useForm();
   const [isThirdPlaceSkipped, setIsThirdPlaceSkipped] = useState(false);
+  const [selectOptions, setSelectOptions] = useState<SelectOptions>([]);
 
   const { tournamentData, setTournamentResults } = useTournamentStore();
 
   const { role } = useRoleStore();
+
+  useEffect(() => {
+    const options = getThirdPlaceOptions();
+    if (options.length === 0) {
+      setIsThirdPlaceSkipped(true);
+    }
+    setSelectOptions(options);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tournamentData?.winners]);
 
   if (!tournamentData) return null;
 
@@ -70,10 +85,23 @@ export const ReportForm: FC<ReportFormProps> = ({ onOk }) => {
     const formatLabel = (values: string[]) => values.join(" & ");
     const { candidate1, candidate2 } = winners.thirdPlaceCandidates;
 
-    return [
-      { value: candidate1.join(","), label: formatLabel(candidate1) },
-      { value: candidate2.join(","), label: formatLabel(candidate2) },
-    ];
+    const options: SelectOptions = [];
+
+    if (candidate1.length > 0) {
+      options.push({
+        value: candidate1.join(","),
+        label: formatLabel(candidate1),
+      });
+    }
+
+    if (candidate2.length > 0) {
+      options.push({
+        value: candidate2.join(","),
+        label: formatLabel(candidate2),
+      });
+    }
+
+    return options;
   };
 
   const playerOrTeam = tourType === "1x1" ? "игрока" : "команду";
@@ -99,12 +127,22 @@ export const ReportForm: FC<ReportFormProps> = ({ onOk }) => {
       </Form.Item>
 
       <Form.Item>
-        <Checkbox
-          checked={isThirdPlaceSkipped}
-          onChange={() => setIsThirdPlaceSkipped(!isThirdPlaceSkipped)}
+        <Tooltip
+          title={
+            selectOptions.length === 0
+              ? "Нет игроков на 3-м месте. Чекбокс проставлен автоматически"
+              : null
+          }
+          placement="left"
         >
-          Без 3-го места
-        </Checkbox>
+          <Checkbox
+            checked={isThirdPlaceSkipped}
+            disabled={selectOptions.length === 0}
+            onChange={() => setIsThirdPlaceSkipped(!isThirdPlaceSkipped)}
+          >
+            Без 3-го места
+          </Checkbox>
+        </Tooltip>
       </Form.Item>
 
       {!isThirdPlaceSkipped && (
@@ -115,7 +153,7 @@ export const ReportForm: FC<ReportFormProps> = ({ onOk }) => {
           name="thirdPlace"
           rules={[{ required: true, message: `Выбери ${playerOrTeam}!` }]}
         >
-          <Select options={getThirdPlaceOptions()} />
+          <Select options={selectOptions} />
         </Form.Item>
       )}
 
