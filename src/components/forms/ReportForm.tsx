@@ -30,6 +30,12 @@ export const ReportForm: FC<ReportFormProps> = ({ onOk }) => {
   const { role } = useRoleStore();
 
   useEffect(() => {
+    if (selectOptions.length === 1) {
+      form.setFieldsValue({ thirdPlace: selectOptions[0].value });
+    }
+  }, [form, selectOptions]);
+
+  useEffect(() => {
     const options = getThirdPlaceOptions();
     if (options.length === 0) {
       setIsThirdPlaceSkipped(true);
