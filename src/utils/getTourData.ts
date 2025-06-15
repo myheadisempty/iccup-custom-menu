@@ -25,7 +25,7 @@ export const getTourData = async (id: string) => {
   const tourType = parseTourType($view) as TourType;
   const tourStart = parseTourStart($view);
   const { firstPlace, secondPlace, thirdPlaceCandidates, numOfRounds } =
-    parseGridResults(gridData);
+    parseGridResults(gridData, tourType);
 
   return {
     id,
@@ -72,7 +72,7 @@ const parseTourStart = ($: cheerio.CheerioAPI) => {
   return parseDate($(".pg-left .t-corp3:nth-child(6) .field2").text().trim());
 };
 
-const parseGridResults = (data: string) => {
+const parseGridResults = (data: string, tourType: TourType) => {
   const $ = cheerio.load(data);
   const stages = $('[id^="t"]').children();
   let latestStage: cheerio.Cheerio<Element> | null = null;
@@ -113,12 +113,15 @@ const parseGridResults = (data: string) => {
     $(".round").last().find("a").text().match(/\d+/)![0]
   );
 
-  const halfIndex = thirdPlace.length / 2;
+  const teamSize = Number(tourType.match(/^(\d+)x\d+$/)![1]);
 
-  const thirdPlaceCandidates = {
-    candidate1: thirdPlace.slice(0, halfIndex),
-    candidate2: thirdPlace.slice(halfIndex),
-  };
+  const candidate1 = thirdPlace.slice(0, teamSize);
+  const candidate2 =
+    thirdPlace.length === teamSize * 2
+      ? thirdPlace.slice(teamSize, teamSize * 2)
+      : [];
+
+  const thirdPlaceCandidates = { candidate1, candidate2 };
 
   return { firstPlace, secondPlace, thirdPlaceCandidates, numOfRounds };
 };
