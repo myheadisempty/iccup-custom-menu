@@ -45,12 +45,11 @@ export const generateCustomTourReportText = ({
     awards[0].cups,
     tourType
   );
-  const secondPlaceText = generatePlaceBlock(
-    2,
-    secondPlace,
-    awards[1].cups,
-    tourType
-  );
+
+  const secondPlaceText = secondPlace.length
+    ? generatePlaceBlock(2, secondPlace, awards[1].cups, tourType)
+    : "";
+
   const thirdPlaceText = thirdPlace.length
     ? generatePlaceBlock(3, thirdPlace, awards[2].cups, tourType)
     : "";
