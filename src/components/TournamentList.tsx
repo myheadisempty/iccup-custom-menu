@@ -62,7 +62,8 @@ export const TournamentList: FC<TournamentListProps> = ({
         />
         <Select
           className="w-full mt-5 xl:hidden"
-          defaultValue="Выбери турнир"
+          value={loading ? "Загружаем..." : "Выбери турнир"}
+          loading={loading}
           onSelect={(value) => onTournamentSelect(value)}
           options={tournaments.map((tournament) => ({
             value: tournament.id,
