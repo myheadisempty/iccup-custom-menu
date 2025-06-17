@@ -60,7 +60,7 @@ const Home = () => {
 
   return (
     <>
-      <div className="justify-between px-4 sm:px-6 lg:px-8 lg:flex">
+      <div className="justify-between mt-5 mx-4 lg:mx-8 sm:mx-6 xl:flex">
         <OptionsMenu />
         <TournamentList onTournamentSelect={handleTournamentSelect} />
         <ReportTextArea />

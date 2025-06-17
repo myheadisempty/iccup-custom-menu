@@ -116,7 +116,7 @@ export const OptionsMenu = () => {
   };
 
   return (
-    <div className="pt-5 mb-5 min-w-64">
+    <div className="mb-5 min-w-64 xl:mr-8 2xl:mr-0">
       <div className="flex justify-between">
         <label className="text-gray-300 mr-4">Повышенные капсы</label>
         <Switch

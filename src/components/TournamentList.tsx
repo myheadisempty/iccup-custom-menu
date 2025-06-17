@@ -50,7 +50,7 @@ export const TournamentList: FC<TournamentListProps> = ({
   return (
     <>
       {contextHolder}
-      <div className="order-2 mt-5 xl:pl-8">
+      <div className="order-2 mb-5 xl:min-w-[229px] xl:ml-8 2xl:ml-0">
         <Search
           placeholder="Можно по ID турнира"
           onSearch={(value) => {
@@ -61,7 +61,7 @@ export const TournamentList: FC<TournamentListProps> = ({
           allowClear
         />
         <Select
-          className="w-full mt-5 lg:hidden"
+          className="w-full mt-5 xl:hidden"
           defaultValue="Выбери турнир"
           onSelect={(value) => onTournamentSelect(value)}
           options={tournaments.map((tournament) => ({
@@ -70,7 +70,7 @@ export const TournamentList: FC<TournamentListProps> = ({
           }))}
         />
         {loading ? (
-          <div className="hidden mt-5 lg:block">
+          <div className="hidden mt-5 xl:block">
             <Skeleton
               loading={loading}
               active
