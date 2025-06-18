@@ -118,7 +118,7 @@ export const OptionsMenu = () => {
   return (
     <div className="mb-5 min-w-64 xl:mr-8 2xl:mr-0">
       <div className="flex justify-between">
-        <label className="text-gray-300 mr-4">Повышенные капсы</label>
+        <label className="text-gray-300">Повышенные капсы</label>
         <Switch
           onChange={handleSwitchChange}
           checked={isBoostedAwardsActive}
