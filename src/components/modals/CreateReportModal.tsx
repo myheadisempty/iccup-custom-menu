@@ -22,7 +22,7 @@ export const CreateReportModal: FC<CreateReportModalProps> = ({
       open={open}
       onCancel={onCancel}
       onOk={onOk}
-      destroyOnClose
+      destroyOnHidden
       centered
       footer={null}
     >

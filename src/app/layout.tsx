@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 const RootLayout = ({ children }: { children: ReactNode }) => {
   return (
     <html lang="ru" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={`${inter.className} bg-main`}>
         <AntdRegistry>
           <ThemeProvider attribute="class">
             <Providers>{children}</Providers>

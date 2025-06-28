@@ -1,6 +1,4 @@
-@import "tailwindcss";
-
-@config '../../tailwind.config.ts';
+@import "tailwindcss" important;
 
 @layer base {
   *,
@@ -9,5 +7,35 @@
   ::backdrop,
   ::file-selector-button {
     border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+@theme {
+  --breakpoint-lg: 60rem;
+  --breakpoint-xl: 80rem;
+  --breakpoint-2xl: 90rem;
+
+  --color-main: #1a1a1a;
+  --color-divider-light: rgba(84, 84, 84, 0.48);
+
+  --spacing-screen-max-width: 1376px;
+  --spacing-sidebar-width-small: 272px;
+}
+
+@layer components {
+  .sidebar {
+    @apply bg-main fixed top-0 opacity-0 h-full z-50 px-8 max-w-[320px] -translate-x-full transition-all duration-500 ease-in-out;
+
+    @variant lg {
+      @apply opacity-100 translate-x-0;
+    }
+
+    @variant 2xl {
+      @apply px-8 w-[calc((100%-var(--spacing-screen-max-width))/2+var(--spacing-sidebar-width-small))];
+    }
+  }
+
+  .open {
+    @apply opacity-100 translate-x-0 transition-all duration-500 ease-[cubic-bezier(.19,1,.22,1)];
   }
 }

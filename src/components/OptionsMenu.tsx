@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { Button, Switch } from "antd";
+import { FC, useEffect, useRef, useState } from "react";
+import { Button, Divider, Switch } from "antd";
 import {
   CustomTournamentResults,
   DotaTournamentResults,
@@ -7,16 +7,27 @@ import {
 } from "@/utils/types";
 import useTournamentStore from "@/store/tournamentStore";
 import useRoleStore from "@/store/roleStore";
+import useOutsideClick from "@/utils/hooks/useOutsideClick";
 
 const AWARD_BOOSTS = [30, 20, 10] as const;
 
-export const OptionsMenu = () => {
+interface OptionsMenuProps {
+  isSidebarOpen: boolean;
+  setIsSidebarOpen: (state: boolean) => void;
+}
+
+export const OptionsMenu: FC<OptionsMenuProps> = ({
+  isSidebarOpen,
+  setIsSidebarOpen,
+}) => {
   const [isBoostedAwardsActive, setIsBoostedAwardsActive] = useState(false);
   const [baseAwards, setBaseAwards] = useState<number[] | null>(null);
   const previousResultsRef = useRef<TournamentResultsUnion | null>(null);
   const { role, toggleRole } = useRoleStore();
 
   const { tournamentResults, setTournamentResults } = useTournamentStore();
+
+  const sidebarRef = useOutsideClick(() => setIsSidebarOpen(false));
 
   const haveResultsChanged = (
     prev: TournamentResultsUnion,
@@ -109,15 +120,19 @@ export const OptionsMenu = () => {
     }
   };
 
-  const handleRoleChangle = () => {
+  const handleClick = () => {
     toggleRole();
     resetState();
+    setIsSidebarOpen(false);
     setTournamentResults(null);
   };
 
   return (
-    <div className="mb-5 min-w-64 xl:mr-8 2xl:mr-0">
-      <div className="flex justify-between">
+    <aside
+      className={`sidebar${isSidebarOpen ? " open" : ""}`}
+      ref={sidebarRef}
+    >
+      <div className="flex pt-6 justify-between">
         <label className="text-gray-300">Повышенные капсы</label>
         <Switch
           onChange={handleSwitchChange}
@@ -125,12 +140,10 @@ export const OptionsMenu = () => {
           disabled={!tournamentResults || role === "dota"}
         />
       </div>
-      <Button
-        onClick={handleRoleChangle}
-        className="flex mt-4 w-full"
-      >{`Переключиться на ${
+      <Divider className="mt-3 mb-5" />
+      <Button onClick={handleClick} className="w-full">{`Переключиться на ${
         role === "custom" ? "DotA" : "Custom"
       } секцию`}</Button>
-    </div>
+    </aside>
   );
 };
