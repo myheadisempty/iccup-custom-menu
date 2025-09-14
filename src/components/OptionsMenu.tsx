@@ -41,9 +41,9 @@ export const OptionsMenu: FC<OptionsMenuProps> = ({
     );
   };
 
-  const extractCups = (
+  const extractRunes = (
     awards: CustomTournamentResults["awards"] | DotaTournamentResults["awards"]
-  ) => awards.map((award) => award.cups);
+  ) => awards.map((award) => award.runes);
 
   const getBoostedAwards = (baseAwards: number[]) =>
     baseAwards.map((num, index) => num + AWARD_BOOSTS[index]);
@@ -75,7 +75,7 @@ export const OptionsMenu: FC<OptionsMenuProps> = ({
     if (haveResultsChanged(prevResults, tournamentResults)) {
       resetState();
     } else if (isBoostedAwardsActive && baseAwards) {
-      const currentAwards = extractCups(tournamentResults.awards);
+      const currentAwards = extractRunes(tournamentResults.awards);
       const awardsMatch = areAwardsMatchingState(
         currentAwards,
         baseAwards,
@@ -94,11 +94,11 @@ export const OptionsMenu: FC<OptionsMenuProps> = ({
   const handleSwitchChange = () => {
     if (!tournamentResults) return;
 
-    const currentAwards = extractCups(tournamentResults.awards);
+    const currentAwards = extractRunes(tournamentResults.awards);
 
     if (!isBoostedAwardsActive) {
-      const boostedAwards = getBoostedAwards(currentAwards).map((cups) => ({
-        cups,
+      const boostedAwards = getBoostedAwards(currentAwards).map((runes) => ({
+        runes,
       }));
 
       setBaseAwards(currentAwards);
@@ -108,8 +108,8 @@ export const OptionsMenu: FC<OptionsMenuProps> = ({
       });
       setIsBoostedAwardsActive(true);
     } else if (isBoostedAwardsActive && baseAwards) {
-      const restoredAwards = baseAwards.map((cups) => ({
-        cups,
+      const restoredAwards = baseAwards.map((runes) => ({
+        runes,
       }));
 
       setTournamentResults({
@@ -133,7 +133,7 @@ export const OptionsMenu: FC<OptionsMenuProps> = ({
       ref={sidebarRef}
     >
       <div className="flex pt-6 justify-between">
-        <label className="text-gray-300">Повышенные капсы</label>
+        <label className="text-gray-300">Повышенные награды</label>
         <Switch
           onChange={handleSwitchChange}
           checked={isBoostedAwardsActive}

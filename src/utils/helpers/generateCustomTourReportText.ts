@@ -24,7 +24,7 @@ const generatePlaceBlock = (
 
   return `${place} место[img]${imageUrl}[/img] - ${generatePlayerLinks(
     players
-  )} - получа${tourType !== "1x1" ? "ют по" : "ет"} ${awards} капсов\n`;
+  )} - получа${tourType !== "1x1" ? "ют по" : "ет"} ${awards} Руны\n`;
 };
 
 export const generateCustomTourReportText = ({
@@ -42,16 +42,16 @@ export const generateCustomTourReportText = ({
   const firstPlaceText = generatePlaceBlock(
     1,
     firstPlace,
-    awards[0].cups,
+    awards[0].runes,
     tourType
   );
 
   const secondPlaceText = secondPlace.length
-    ? generatePlaceBlock(2, secondPlace, awards[1].cups, tourType)
+    ? generatePlaceBlock(2, secondPlace, awards[1].runes, tourType)
     : "";
 
   const thirdPlaceText = thirdPlace.length
-    ? generatePlaceBlock(3, thirdPlace, awards[2].cups, tourType)
+    ? generatePlaceBlock(3, thirdPlace, awards[2].runes, tourType)
     : "";
 
   return `[url=https://iccup.com/tourney/view/${id}.html]${title} [${tourStart}][/url]

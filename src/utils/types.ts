@@ -28,7 +28,7 @@ export interface CustomTournamentResults extends TournamentData {
     thirdPlace: string[];
   };
   awards: Array<{
-    cups: number;
+    runes: number;
   }>;
 }
 
@@ -40,7 +40,7 @@ export interface DotaTournamentResults extends TournamentData {
     thirdPlace: string[];
   };
   awards: Array<{
-    cups: number;
+    runes: number;
     pts: number;
   }>;
 }

@@ -22,11 +22,11 @@ const generatePlaceBlock = (
     3: "https://iccup.com/upload/images/news/iCCup.222/3место.png",
   }[place];
 
-  const { cups, pts } = awards;
+  const { runes, pts } = awards;
   const isTeamTour = tourType === "3x3" || tourType === "5x5";
 
   if (isTeamTour) {
-    return `[img]${imageUrl}[/img][b]место ${cups}[/b][img]https://i.imgur.com/nf7UDEX.png[/img][b] +${pts} ПТС каждому игроку команды![/b]\n${generatePlayerLinks(
+    return `[img]${imageUrl}[/img][b]место ${runes}[/b][img]https://iccup.com/upload/images/news/kiber/runes-icon.png[/img][b] +${pts} ПТС каждому игроку команды![/b]\n${generatePlayerLinks(
       players,
       tourType
     )}\n`;
@@ -36,7 +36,7 @@ const generatePlaceBlock = (
       tourType
     )}[b] получа${
       tourType !== "1x1" ? "ют по" : "ет"
-    } ${cups}[/b][img]https://i.imgur.com/nf7UDEX.png[/img][b] и ${pts} птс[/b]\n`;
+    } ${runes}[/b][img]https://iccup.com/upload/images/news/kiber/runes-icon.png[/img][b] и ${pts} птс[/b]\n`;
   }
 };
 

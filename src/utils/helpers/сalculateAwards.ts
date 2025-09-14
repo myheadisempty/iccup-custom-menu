@@ -1,6 +1,6 @@
 import { TourType } from "../types";
 
-type AwardItem = { cups: number; pts?: number };
+type AwardItem = { runes: number; pts?: number };
 type AwardRange = {
   [key: string]: AwardItem[];
 };
