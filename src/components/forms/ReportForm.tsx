@@ -1,4 +1,4 @@
-import { calculateAwards } from "@/utils/helpers/сalculateAwards";
+import { calculateAwards } from "@/utils/helpers/calculateAwards";
 import { Button, Checkbox, Form, InputNumber, Select, Tooltip } from "antd";
 import { FC, useEffect, useState } from "react";
 import dotaAwards from "../../../reward-configs/dota-tours-rewards.json";
