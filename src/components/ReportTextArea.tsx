@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { CopyButton } from "./CopyButton";
-import { generateCustomTourReportText } from "@/utils/helpers/generateCustomTourReportText";
-import { generateDotaTourReportText } from "@/utils/helpers/generateDotaTourReportText";
+import { generateCustomTourReportText } from "@/tournament-reports";
+import { generateDotaTourReportText } from "@/tournament-reports";
 import useTournamentStore from "@/store/tournamentStore";
 import useRoleStore from "@/store/roleStore";
-import { DotaTournamentResults } from "@/utils/types";
+import { CustomTournamentResults, DotaTournamentResults } from "@/utils/types";
 
 export const ReportTextArea = () => {
   const [reportText, setReportText] = useState("");
@@ -16,7 +16,11 @@ export const ReportTextArea = () => {
   useEffect(() => {
     if (tournamentResults) {
       if (role === "custom") {
-        setReportText(generateCustomTourReportText(tournamentResults));
+        setReportText(
+          generateCustomTourReportText(
+            tournamentResults as CustomTournamentResults
+          )
+        );
       } else if (role === "dota") {
         setReportText(
           generateDotaTourReportText(tournamentResults as DotaTournamentResults)
