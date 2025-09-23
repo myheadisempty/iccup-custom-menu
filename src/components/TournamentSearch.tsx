@@ -14,7 +14,7 @@ export const TournamentSearch: FC<TournamentSearchProps> = ({
 }) => {
   return (
     <Search
-      placeholder="Можно по ID турнира"
+      placeholder="Поиск по ID турнира"
       allowClear
       className={className}
       onSearch={(value) => {
