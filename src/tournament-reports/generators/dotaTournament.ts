@@ -55,10 +55,14 @@ export class DotaTournamentGenerator extends BaseTournamentReportGenerator<DotaT
       this.generatePlaceText(1, firstPlace, awards[0], tourType),
       this.generatePlaceText(2, secondPlace, awards[1], tourType),
       this.generatePlaceText(3, thirdPlace, awards[2], tourType),
-    ].join("");
+    ];
+
+    if (thirdPlace.length !== 0) {
+      places.push(this.generatePlaceText(3, thirdPlace, awards[2], tourType));
+    }
 
     return Template.render(this.getTemplate(), {
-      places,
+      places: places.join(""),
     });
   }
 }

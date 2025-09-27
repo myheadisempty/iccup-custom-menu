@@ -60,14 +60,19 @@ export class CustomTournamentGenerator extends BaseTournamentReportGenerator<Cus
     const places = [
       this.generatePlaceText(1, firstPlace, awards[0].runes, tourType),
       this.generatePlaceText(2, secondPlace, awards[1].runes, tourType),
-      this.generatePlaceText(3, thirdPlace, awards[2].runes, tourType),
-    ].join("");
+    ];
+
+    if (thirdPlace.length !== 0) {
+      places.push(
+        this.generatePlaceText(3, thirdPlace, awards[2].runes, tourType)
+      );
+    }
 
     return Template.render(this.getTemplate(), {
       id,
       title,
       tourStart,
-      places,
+      places: places.join(""),
       participantType: this.getParticipantType(tourType),
       registered,
       confirmed,
